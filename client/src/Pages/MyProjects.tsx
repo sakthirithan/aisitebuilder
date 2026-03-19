@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Project } from '../types';
-import { Loader2Icon, PlusIcon } from 'lucide-react';
+import { Loader2Icon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { dummyProjects } from '../assets/assets';
+import Footer from '../Components/Footer';
 
 const MyProjects = () => {
   const [ loading, setLoading ] = useState(true)
@@ -15,6 +16,10 @@ const MyProjects = () => {
     setTimeout(() => {
       setLoading(false)
     },1000)
+  }
+
+  const deleteProject = async (projectId:string) => {
+
   }
 
   useEffect(()=> {
@@ -41,7 +46,7 @@ const MyProjects = () => {
 
               <div className='flex flex-wrap gap-3.5'>
                 {projects.map((project)=>(
-                  <div key={project.id} className='relative group w-72
+                  <div onClick={() => navigate(`/projects/${project.id}`)} key={project.id} className='relative group w-72
                   max-sm:mx-auto cursor-pointer bg-gray-900/60 border
                   border-gray-700 rounded-lg overflow-hidden shadow-md group
                   hover:shadow-indigo-700/30 hover:border-indigo-800/80
@@ -53,8 +58,8 @@ const MyProjects = () => {
                       {project.current_code ? (
                         <iframe 
                         srcDoc={project.current_code}
-                        className='absolute top-0 left-0 w-[1200px] 
-                        h-[800px] origin-top-left pointer-events-none'
+                        className='absolute top-0 left-0 w-300 
+                        h-200 origin-top-left pointer-events-none'
                         sandbox='allow-scripts allow-same-origin'
                         style={{transform: 'scale(0.25)'}}/>
                       ) : (
@@ -86,12 +91,26 @@ const MyProjects = () => {
                       <div onClick={(e) => e.stopPropagation} className='flex justify-between items-center
                       mt-6 '
                       >
-                        <span className='text-gray-500 text-sm'>{new Date(project.createdAt).toLocaleDateString()}</span>
+                        <span className='text-gray-500 text-sm'
+                        >
+                          {new Date(project.createdAt).toLocaleDateString()}
+                        </span>
+
                         <div className='flex gap-3 text-white text-sm'
                         >
+                          <button onClick={() => navigate(`/preview/${project.id}`)} className='px-3 py-1.5 bg-white/10 hover:bg-white/15 rounded-md
+                          transition-all'>Preview</button>
 
+                          <button onClick={() => navigate(`/projects/${project.id}`)} className='px-3 py-1.5 bg-white/10 hover:bg-white/15 rounded-md
+                          transition-colors'>Open</button>
                         </div>
                       </div>
+                    </div>
+                    <div onClick={e=> e.stopPropagation()}>
+                      <TrashIcon className='absolute top-3 right-3
+                      scale-0 group-hover:scale-100 bg-white p-1.5 size-7
+                      rounded text-red-500 text-xl cursor-pointer
+                      transition-all' onClick={() => deleteProject(project.id)}/>
                     </div>
                   </div>
                 ))}
@@ -112,6 +131,7 @@ const MyProjects = () => {
           </div>
         )}
       </div>
+      <Footer />
     </>
   )
 }
